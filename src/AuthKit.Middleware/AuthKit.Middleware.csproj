@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\AuthKit.Core\AuthKit.Core.csproj" />
+    <ProjectReference Include="..\AuthKit.Identity\AuthKit.Identity.csproj" />
+    <ProjectReference Include="..\AuthKit.Security\AuthKit.Security.csproj" />
+    <ProjectReference Include="..\AuthKit.MultiTenancy\AuthKit.MultiTenancy.csproj" />
+    <ProjectReference Include="..\AuthKit.Data\AuthKit.Data.Abstractions\AuthKit.Data.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
