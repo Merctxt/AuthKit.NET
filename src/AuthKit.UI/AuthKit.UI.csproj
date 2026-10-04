@@ -5,7 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Scalar.AspNetCore" Version="2.0.3" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.0.4" />
   </ItemGroup>
 
   <PropertyGroup>

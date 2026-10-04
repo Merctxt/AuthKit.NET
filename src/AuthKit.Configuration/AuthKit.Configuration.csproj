@@ -2,13 +2,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthKit.Core\AuthKit.Core.csproj" />
-    <ProjectReference Include="..\AuthKit.Identity\AuthKit.Identity.csproj" />
+    <ProjectReference Include="..\AuthKit.Data\AuthKit.Data.EntityFramework\AuthKit.Data.EntityFramework.csproj" />
     <ProjectReference Include="..\AuthKit.MultiTenancy\AuthKit.MultiTenancy.csproj" />
     <ProjectReference Include="..\AuthKit.Data\AuthKit.Data.Abstractions\AuthKit.Data.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
