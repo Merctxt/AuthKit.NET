@@ -42,8 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{5D20
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.WebApi", "samples\Sample.WebApi\Sample.WebApi.csproj", "{FA660587-D4C6-4DFC-AE6B-3052E355E176}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.MultiTenant", "samples\Sample.MultiTenant\Sample.MultiTenant.csproj", "{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -246,19 +244,7 @@ Global
 		{FA660587-D4C6-4DFC-AE6B-3052E355E176}.Release|x64.Build.0 = Release|Any CPU
 		{FA660587-D4C6-4DFC-AE6B-3052E355E176}.Release|x86.ActiveCfg = Release|Any CPU
 		{FA660587-D4C6-4DFC-AE6B-3052E355E176}.Release|x86.Build.0 = Release|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Debug|x64.Build.0 = Debug|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Debug|x86.Build.0 = Debug|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Release|x64.ActiveCfg = Release|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Release|x64.Build.0 = Release|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Release|x86.ActiveCfg = Release|Any CPU
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB}.Release|x86.Build.0 = Release|Any CPU
-	EndGlobalSection
+		EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
@@ -280,6 +266,5 @@ Global
 		{CE8594EF-FBA0-4B8A-A8FD-D2D79B044990} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{65155860-322E-4F13-A822-CD7115157D3D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{FA660587-D4C6-4DFC-AE6B-3052E355E176} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
-		{7DA2FC4D-4E3F-433D-9090-7E37876BBDCB} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 EndGlobal
