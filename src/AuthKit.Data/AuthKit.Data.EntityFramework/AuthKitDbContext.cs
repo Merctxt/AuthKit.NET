@@ -35,6 +35,8 @@ public class AuthKitDbContext : DbContext
             entity.Property(e => e.PasswordHash).IsRequired();
             entity.Property(e => e.EmailConfirmed).HasDefaultValue(false);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.LastLoginAt).IsRequired(false);
 
             entity.HasOne(e => e.Tenant).WithMany(e => e.Users).HasForeignKey(e => e.TenantId);
             entity.HasMany(e => e.UserRoles).WithOne(e => e.User).HasForeignKey(e => e.UserId);
@@ -48,7 +50,7 @@ public class AuthKitDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.Domain).HasMaxLength(200);
+            entity.Property(e => e.Domain).HasMaxLength(200).IsRequired(false);
             entity.Property(e => e.Settings).HasDefaultValue("{}");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
 
@@ -64,7 +66,6 @@ public class AuthKitDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Description).HasMaxLength(500);
 
-            entity.HasOne(e => e.Tenant).WithMany(e => e.Roles).HasForeignKey(e => e.TenantId);
             entity.HasMany(e => e.UserRoles).WithOne(e => e.Role).HasForeignKey(e => e.RoleId);
             entity.HasMany(e => e.RolePermissions).WithOne(e => e.Role).HasForeignKey(e => e.RoleId);
         });
@@ -100,11 +101,13 @@ public class AuthKitDbContext : DbContext
             entity.Property(e => e.RefreshTokenHash).IsRequired();
             entity.Property(e => e.IsRevoked).HasDefaultValue(false);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.Property(e => e.ExpiresAt).IsRequired();
 
             entity.HasOne(e => e.User).WithMany(e => e.Sessions).HasForeignKey(e => e.UserId);
 
             entity.HasIndex(e => e.RefreshTokenJti).IsUnique();
             entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.ExpiresAt);
         });
 
         modelBuilder.Entity<OAuthAccount>(entity =>
@@ -124,6 +127,7 @@ public class AuthKitDbContext : DbContext
             entity.HasKey(e => e.UserId);
             entity.Property(e => e.ProviderType).IsRequired().HasMaxLength(20);
             entity.Property(e => e.Secret).IsRequired().HasMaxLength(64);
+            entity.Property(e => e.IsEnabled).HasDefaultValue(false);
             entity.Property(e => e.BackupCodesHashed).IsRequired().HasMaxLength(512);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
         });
