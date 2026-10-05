@@ -2,7 +2,7 @@ namespace AuthKit.Core.Options;
 
 public enum HashingAlgorithm
 {
-    Argon2id,
+    Pbkdf2,
     BCrypt
 }
 
@@ -26,6 +26,7 @@ public class JwtOptions
     public string? Audience { get; set; }
     public int ClockSkewMinutes { get; set; } = 1;
     public bool RequireExpirationTime { get; set; } = true;
+    public bool ValidateIssuer { get; set; } = true;
     public string SigningAlgorithm { get; set; } = "HS256";
 }
 
@@ -41,7 +42,7 @@ public class RefreshTokenOptions
 
 public class PasswordHashingOptions
 {
-    public HashingAlgorithm Algorithm { get; set; } = HashingAlgorithm.Argon2id;
+    public HashingAlgorithm Algorithm { get; set; } = HashingAlgorithm.Pbkdf2;
     public int Argon2MemoryKB { get; set; } = 65536;
     public int Argon2Iterations { get; set; } = 3;
     public int Argon2Parallelism { get; set; } = 1;
