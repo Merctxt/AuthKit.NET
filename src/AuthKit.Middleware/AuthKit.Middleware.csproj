@@ -3,9 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\AuthKit.Core\AuthKit.Core.csproj" />
     <ProjectReference Include="..\AuthKit.Identity\AuthKit.Identity.csproj" />
-    <ProjectReference Include="..\AuthKit.Security\AuthKit.Security.csproj" />
-    <ProjectReference Include="..\AuthKit.MultiTenancy\AuthKit.MultiTenancy.csproj" />
-    <ProjectReference Include="..\AuthKit.Data\AuthKit.Data.Abstractions\AuthKit.Data.Abstractions.csproj" />
+    <ProjectReference Include="..\AuthKit.AuthKit\AuthKit.AuthKit.csproj" />
+    <ProjectReference Include="..\AuthKit.Interfaces\AuthKit.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

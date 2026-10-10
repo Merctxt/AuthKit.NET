@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>AuthKit.AuthKit</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>AuthKit</Authors>
+    <Description>Complete authentication and authorization framework for .NET</Description>
+    <DefaultNamespace>AuthKit.AuthKit</DefaultNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AuthKit.Core\AuthKit.Core.csproj" />
+    <ProjectReference Include="..\AuthKit.Data\AuthKit.Data.EntityFramework\AuthKit.Data.EntityFramework.csproj" />
+    <ProjectReference Include="..\AuthKit.Interfaces\AuthKit.Interfaces.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="9.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+</Project>

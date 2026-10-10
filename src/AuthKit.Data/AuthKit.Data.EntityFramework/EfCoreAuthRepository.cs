@@ -3,9 +3,9 @@ using System.Security.Cryptography;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using AuthKit.Core.Models;
-using AuthKit.Data.Abstractions;
+using AuthKit.Interfaces.Repositories;
 
-namespace AuthKit.Data.EntityFramework;
+namespace AuthKit.Data;
 
 public class EfCoreAuthRepository : IAuthRepository
 {

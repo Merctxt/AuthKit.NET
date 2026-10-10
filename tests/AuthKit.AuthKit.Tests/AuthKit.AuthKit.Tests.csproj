@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AuthKit.Identity\AuthKit.Identity.csproj" />
     <ProjectReference Include="..\..\src\AuthKit.AuthKit\AuthKit.AuthKit.csproj" />
     <ProjectReference Include="..\..\src\AuthKit.Core\AuthKit.Core.csproj" />
   </ItemGroup>

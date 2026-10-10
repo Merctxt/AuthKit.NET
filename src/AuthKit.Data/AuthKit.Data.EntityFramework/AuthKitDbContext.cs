@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AuthKit.Core.Models;
 
-namespace AuthKit.Data.EntityFramework;
+namespace AuthKit.Data;
 
 public class AuthKitDbContext : DbContext
 {

@@ -1,7 +1,7 @@
-using AuthKit.Core.Options;
+using AuthKit.Core.Services;
 using System.Security.Claims;
 
-namespace AuthKit.Core.Services;
+namespace AuthKit.Interfaces.Services;
 
 public interface IPasswordHasher
 {

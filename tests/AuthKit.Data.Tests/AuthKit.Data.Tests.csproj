@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AuthKit.Data\AuthKit.Data.Abstractions\AuthKit.Data.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\AuthKit.Interfaces\AuthKit.Interfaces.csproj" />
     <ProjectReference Include="..\..\src\AuthKit.Core\AuthKit.Core.csproj" />
   </ItemGroup>
 
