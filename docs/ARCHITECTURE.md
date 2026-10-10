@@ -10,10 +10,10 @@ AuthKit.NET é um framework de autenticação e autorização integrado à aplic
 
 ### Princípios
 - **Zero boilerplate** — só `Add` + `Use` no `Program.cs`
-- **DB agnóstico** — interface `IAuthRepository`, implementações para EF Core, Dapper, InMemory
+- **DB agnóstico** — interface `IAuthRepository`, implementação EF Core
 - **DB compartilhado ou dedicado** — usuário decide se usa próprio `DbContext` ou cria um separado
 - **Injeção direta na app** — mapeia rotas, middlewares, UI automaticamente
-- **Segurança por padrão** — Argon2id, rate limiting, token rotation, MFA
+- **Segurança por padrão** — PBKDF2/BCrypt, rate limiting, token rotation, MFA
 - **Multi-tenancy nativo** — sem trabalho extra
 - **Escalável** — suporte a Redis para rate limiting/sessions (plano futuro)
 - **Testável** — InMemory provider para testes unitários
@@ -21,64 +21,59 @@ AuthKit.NET é um framework de autenticação e autorização integrado à aplic
 
 ---
 
-## 2. Estrutura de Projetos
+## 2. Estrutura de Projetos (Consolidada)
 
 ```
 AuthKit.NET/
 ├── src/
-│   ├── AuthKit.Core/                    ← Núcleo agnóstico de DB
-│   │   ├── Models/                      ← Entidades (User, Role, Tenant, Session, etc)
-│   │   ├── Services/                    ← Interfaces (IUserService, ITokenService, etc)
-│   │   ├── Exceptions/                  ← Exceções customizadas
-│   │   └── Contracts/                   ← Contratos genéricos
+│   ├── AuthKit.Core/                    ← Núcleo: Models, Options, DTOs, Interfaces base
+│   │   ├── Models/                      ← 11 entidades (User, Role, Tenant, Session, etc)
+│   │   ├── Options/                     ← 12 classes de configuração + enum
+│   │   └── Services/                    ← Interfaces base + DTOs (record)
 │   │
-│   ├── AuthKit.Identity/                ← Lógica de auth (login, registro, token, MFA)
-│   │   ├── PasswordHashing/             ← Argon2id / BCrypt
-│   │   ├── TokenProviders/              ← JWT + Refresh Token + Rotação
-│   │   ├── Mfa/                         ← TOTP
-│   │   ├── SessionManager/              ← Sessão multi-dispositivo + revogação
-│   │   └── Authorization/               ← RBAC + ABAC
+│   ├── AuthKit.Interfaces/              ← Todas as interfaces de serviço (contratos)
+│   │   ├── Services/                    ← 11 interfaces (IPasswordHasher, ITokenService, etc.)
+│   │   └── Repositories/                ← IAuthRepository, DatabaseProvider
 │   │
-│   ├── AuthKit.Data/                    ← Camada de dados (separada por provedor)
-│   │   ├── Data.Abstractions/           ← Interfaces IAuthRepository, IQueryExecutor
-│   │   ├── Data.EntityFramework/        ← Implementação EF Core
-│   │   ├── Data.Dapper/                 ← Implementação Dapper (opcional)
-│   │   └── Data.InMemory/               ← Implementação para testes
+│   ├── AuthKit.AuthKit/                 ← Configuration + Security (consolidado)
+│   │   ├── Configuration/               ← AuthKitOptions, AuthKitBuilder, DI extensions
+│   │   └── Services/                    ← JwtTokenService, PasswordHashService
 │   │
-│   ├── AuthKit.Security/                ← Segurança
-│   │   ├── RateLimiting/                ← Rate limit por IP/account
-│   │   ├── Events/                      ← Eventos de segurança (login failed, token revoked)
-│   │   └── Encryption/                  ← Criptografia de sensitive data
+│   ├── AuthKit.Data/
+│   │   └── AuthKit.Data.EntityFramework/ ← EF Core impl (DbContext + Repository)
 │   │
-│   ├── AuthKit.MultiTenancy/            ← Multi-tenancy
-│   │   ├── TenantResolver/              ← Resolução de tenant (header, subdomain, claim)
-│   │   └── TenantContext/               ← Contexto do tenant atual
-│   │
-│   ├── AuthKit.Integration/             ← Integrações externas
-│   │   ├── OAuth/                       ← OAuth2/OIDC providers (Google, GitHub, etc)
-│   │   └── Webhooks/                    ← Webhooks de eventos de auth
-│   │
-│   ├── AuthKit.UI/                      ← Interface de gerenciamento
-│   │   ├── ScalarApiDocs/               ← Swagger/Scalar UI integrado
-│   │   └── AdminDashboard/              ← Dashboard minimalista (opcional, Blazor)
-│   │
-│   ├── AuthKit.Configuration/           ← Configuração fluente
-│   │   └── FluentApi.cs                 ← AddAuthKit(options => { ... })
+│   ├── AuthKit.Identity/                ← Lógica de autenticação (serviços)
+│   │   └── Services/                    ← Login, Registration, Password, MFA, Session, Authorization
 │   │
 │   └── AuthKit.Middleware/              ← Middlewares ASP.NET Core
-│       ├── AuthKitMiddleware.cs
-│       ├── TenantMiddleware.cs
-│       └── RateLimitMiddleware.cs
+│       └── (pendente de implementação)
 │
 ├── tests/
-│   ├── AuthKit.Core.Tests/
-│   ├── AuthKit.Identity.Tests/
-│   ├── AuthKit.Data.Tests/
-│   └── AuthKit.Integration.Tests/
+│   ├── AuthKit.Core.Tests/              ← 23 testes (models + options)
+│   ├── AuthKit.AuthKit.Tests/           ← 21 testes (JWT + password hashing)
+│   ├── AuthKit.Identity.Tests/          ← placeholder
+│   └── AuthKit.Data.Tests/              ← placeholder
 │
 └── samples/
-    ├── Sample.WebApi/                   ← WebAPI minimalista com AuthKit
-    └── Sample.MultiTenant/              ← Exemplo multi-tenancy
+    └── Sample.WebApi/                   ← Template WebAPI (pendente de configuração)
+```
+
+**Total: 10 projetos (6 source + 4 test + 1 sample)**
+
+### Diagrama de Dependências
+
+```
+AuthKit.Core (0 dependências) ← NÚCLEO PURO
+    ↑
+    ├── AuthKit.Interfaces (depends on Core)
+    ├── AuthKit.AuthKit (depends on Core + Interfaces + Data.EntityFramework)
+    └── AuthKit.Data.EntityFramework (depends on Core + Interfaces)
+              ↑
+    ┌─────────┴──────────┐
+    │                    │
+AuthKit.Identity     AuthKit.Middleware
+(depends on Core +   (depends on Core +
+ AuthKit + Interfaces) Identity + Interfaces)
 ```
 
 ---
@@ -93,7 +88,7 @@ AuthKit.NET/
 | `TenantId` | Guid | Chave estrangeira para Tenant |
 | `Email` | string | Email único (scoped por tenant) |
 | `Username` | string | Nome de usuário (opcional) |
-| `PasswordHash` | string | Hash Argon2id / BCrypt |
+| `PasswordHash` | string | Hash PBKDF2/HMACSHA256 ou BCrypt |
 | `EmailConfirmed` | bool | Confirmação de email |
 | `CreatedAt` | DateTime | Data de criação |
 | `UpdatedAt` | DateTime | Data de atualização |
@@ -139,7 +134,7 @@ AuthKit.NET/
 | `Id` | Guid | Chave primária |
 | `UserId` | Guid | Chave estrangeira para User |
 | `DeviceInfo` | string | Navegador, OS, dispositivo |
-| `RefreshTokenHash` | string | Hash do refresh token (não armazenado em plaintext) |
+| `RefreshTokenHash` | string | Hash do refresh token (SHA256) |
 | `RefreshTokenJti` | Guid | JWT ID do token |
 | `ExpiresAt` | DateTime | Expiração da sessão |
 | `CreatedAt` | DateTime | Criação da sessão |
@@ -163,9 +158,9 @@ AuthKit.NET/
 |--------|------|-----------|
 | `UserId` | Guid | Chave primária e estrangeira |
 | `ProviderType` | string | Tipo de 2FA ("TOTP") |
-| `Secret` | string | Segredo criptografado |
+| `Secret` | string | Segredo TOTP |
 | `IsEnabled` | bool | 2FA habilitado? |
-| `BackupCodesHashed` | string | Códigos de backup (hash SHA256) |
+| `BackupCodesHashed` | string | Códigos de backup (hash Base64) |
 | `CreatedAt` | DateTime | Criação da configuração |
 
 ### 3.9 LoginAttempts (Rate Limiting)
@@ -203,9 +198,27 @@ AuthKit.NET/
 
 ---
 
-## 4. Endpoints (API de Auth)
+## 4. Interfaces de Serviço
 
-### 4.1 Autenticação
+| Interface | Responsabilidade |
+|-----------|-----------------|
+| `IPasswordHasher` | Hash e verificação de senhas (PBKDF2/BCrypt) |
+| `ITokenService` | Geração/validação de tokens JWT + refresh |
+| `IEmailService` | Envio de emails (confirmation, reset, 2FA) |
+| `ISessionService` | Gerenciamento de sessões multi-dispositivo |
+| `IMfaService` | TOTP + backup codes para 2FA |
+| `IAuthorizationService` | RBAC + ABAC (verificação roles, permissions, claims) |
+| `ILoginService` | Login com email/senha, 2FA, logout |
+| `IRegistrationService` | Registro de usuário, confirmação de email |
+| `IPasswordService` | Forgot password, reset password |
+| `ITenantService` | Gerenciamento de tenants |
+| `IRateLimitingService` | Rate limiting por IP/account |
+
+---
+
+## 5. Endpoints (API de Auth)
+
+### 5.1 Autenticação
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
@@ -217,7 +230,7 @@ AuthKit.NET/
 | `POST` | `/auth/reset-password` | Reseta senha com token |
 | `POST` | `/auth/verify-email` | Confirma email |
 
-### 4.2 2FA / MFA
+### 5.2 2FA / MFA
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
@@ -226,7 +239,7 @@ AuthKit.NET/
 | `POST` | `/auth/2fa/verify` | Verifica código TOTP |
 | `POST` | `/auth/2fa/backups` | Gera backup codes |
 
-### 4.3 Sessões
+### 5.3 Sessões
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
@@ -234,15 +247,7 @@ AuthKit.NET/
 | `DELETE` | `/auth/sessions/{id}` | Revoga sessão específica |
 | `DELETE` | `/auth/sessions/all` | Revoga todas sessões |
 
-### 4.4 OAuth / Social Login
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/auth/oauth/{provider}/authorize` | Redireciona para OAuth provider |
-| `GET` | `/auth/oauth/{provider}/callback` | Callback OAuth |
-| `POST` | `/auth/oauth/link` | Link OAuth a conta existente |
-
-### 4.5 Admin / Gerenciamento
+### 5.4 Admin / Gerenciamento
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
@@ -252,9 +257,9 @@ AuthKit.NET/
 
 ---
 
-## 5. Fluxos de Segurança
+## 6. Fluxos de Segurança
 
-### 5.1 Refresh Token Rotation
+### 6.1 Refresh Token Rotation
 
 1. Client usa refresh token **A**
 2. AuthKit valida, gera novo refresh token **B**
@@ -262,7 +267,7 @@ AuthKit.NET/
 4. Se **A** for reaproveitado após **B** → ambos revogados, usuário notificado
 5. Token **B** é retornado ao cliente
 
-### 5.2 Rate Limiting
+### 6.2 Rate Limiting
 
 | Endpoint | Limite | Janela |
 |----------|--------|--------|
@@ -271,32 +276,33 @@ AuthKit.NET/
 | `/forgot-password` | 3 tentativas por IP | 15 min |
 | `/register` | 3 tentativas por IP | 15 min |
 
-- Sliding window com contadores em memória (ou Redis em produção)
+- Sliding window com contadores em banco de dados (tabela `LoginAttempts`)
 - Resposta: `429 Too Many Requests` com `Retry-After` header
 
-### 5.3 Password Hashing
+### 6.3 Password Hashing
 
-- **Argon2id** por padrão (configurável para BCrypt)
-- Parâmetros: `memory=64MB`, `iterations=3`, `parallelism=1` (configuráveis)
+- **PBKDF2/HMACSHA256** por padrão (configurável para BCrypt)
+- Parâmetros: `iterations=3` (configurável), `salt=16 bytes`, `hash=32 bytes`
+- Formato: version(1) + prf(1) + iterations(4) + salt(16) + hash(32)
 
-### 5.4 Token Invalidation
+### 6.4 Token Invalidation
 
 - Sessões podem ser revogadas individualmente ou todas de uma vez
 - Refresh tokens são rastreados no `RefreshTokenRegistry`
-- `JWT blacklisting` opcional via `Jti`
+- `JWT blacklisting` via `Jti`
 
 ---
 
-## 6. Multi-Tenancy
+## 7. Multi-Tenancy
 
-### 6.1 Resolução de Tenant
+### 7.1 Resolução de Tenant
 
 1. Header `X-Tenant-Id`
 2. Subdomain (`tenant.app.com`)
 3. Claim `tenant_id` no JWT
 4. Fallback: tenant padrão (`"default"`)
 
-### 6.2 Isolamento
+### 7.2 Isolamento
 
 - Todas as queries filtram por `TenantId`
 - Users, roles, sessions são scoped por tenant
@@ -304,102 +310,98 @@ AuthKit.NET/
 
 ---
 
-## 7. Configuração Fluent API
+## 8. Configuração Fluent API
 
-### 7.1 Exemplo Mínimo
+### 8.1 Exemplo Mínimo
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthKit(options =>
 {
-    options.UseDatabase(DatabaseType.EntityFrameworkCore);
-    options.UseJwt("sua-chave-super-secreta", TimeSpan.FromMinutes(15));
+    options.SetConnectionString("Server=...;Database=...;");
+    options.UseJwtBearer("sua-chave-super-secreta", TimeSpan.FromMinutes(15));
 });
 
 var app = builder.Build();
 
-app.UseAuthKit();
 app.Run();
 ```
 
-### 7.2 Configuração Completa
+### 8.2 Configuração Completa
 
 ```csharp
 builder.Services.AddAuthKit(options =>
 {
-    // Database - AGNÓSTICO: usa interface IAuthRepository
-    options.UseDatabase(DatabaseType.EntityFrameworkCore);
-    // ou .UseDapper() / .UseInMemory()
-    // O usuário passa seu próprio DbContext via DI
-
+    // Database
+    options.UseDatabase("Server=...;Database=...;", autoMigrate: true);
+    
     // JWT
-    options.UseJwt("sua-chave", TimeSpan.FromMinutes(15));
+    options.UseJwtBearer("sua-chave", TimeSpan.FromMinutes(15));
     options.UseRefreshTokens(TimeSpan.FromDays(7), rotation: true);
-
+    
     // Senhas
-    options.PasswordHasher = HashingAlgorithm.Argon2id;
-
+    options.SetPasswordHashing(HashingAlgorithm.Pbkdf2, bcryptStrength: 12);
+    
     // 2FA
-    options.EnableTwoFactor<TotpProvider>();
-
+    options.EnableTwoFactor();
+    
     // Rate Limiting
     options.EnableRateLimiting();
-
+    
     // Multi-Tenancy
-    options.EnableMultiTenancy(tenant =>
-    {
-        tenant.ResolveByHeader("X-Tenant-Id");
-    });
-
+    options.EnableMultiTenancy();
+    
     // OAuth
-    options.EnableOAuth(providers =>
+    options.EnableOAuthProviders(providers =>
     {
         providers.AddGoogle("client-id", "client-secret");
         providers.AddGitHub("client-id", "client-secret");
     });
-
-    // UI
+    
+    // Scalar UI
     options.EnableScalarUI("/auth/docs", ScalarTheme.Dark);
 });
 ```
 
 ---
 
-## 8. Arquitetura de Camadas
+## 9. Arquitetura de Camadas
 
 ```
 ┌─────────────────────────────────────────────────────┐
 │                 Aplicação do Usuário                  │
 │                   (Program.cs)                       │
 └────────────────────────┬────────────────────────────┘
-                         │
-                         ▼
+                          │
+                          ▼
 ┌─────────────────────────────────────────────────────┐
-│              AuthKit.Middleware                       │
-│  ┌─────────────────┬─────────────────┬────────────┐ │
-│  │ TenantMiddleware│ AuthKitMiddleware│ RateLimit │ │
-│  └─────────────────┴─────────────────┴────────────┘ │
+│             AuthKit.AuthKit                           │
+│  ┌──────────────────┬──────────────────────────┐    │
+│  │ Configuration    │ Services (JWT + Password) │    │
+│  │ - AuthKitBuilder │ - JwtTokenService         │    │
+│  │ - DI Extensions  │ - PasswordHashService     │    │
+│  └──────────────────┴──────────────────────────┘    │
 └────────────────────────┬────────────────────────────┘
-                         │
-                         ▼
+                          │
+                          ▼
 ┌─────────────────────────────────────────────────────┐
 │             AuthKit.Identity                          │
 │  ┌──────────────┬──────────────┬─────────────────┐  │
-│  │ LoginService │ TokenService │ Authorization   │  │
-│  │ PasswordHash │ MfaService   │ RBAC / ABAC     │  │
+│  │ LoginService │ Registration │ Authorization   │  │
+│  │ PasswordSvc  │ MfaService   │ SessionService  │  │
 │  └──────────────┴──────────────┴─────────────────┘  │
 └────────────────────────┬────────────────────────────┘
-                         │
-                         ▼
+                          │
+                          ▼
 ┌─────────────────────────────────────────────────────┐
 │             AuthKit.Data                              │
-│  ┌──────────────────┬──────────────┬──────────────┐ │
-│  │ EfCoreRepository │ DapperRepo   │ InMemoryRepo │ │
-│  └──────────────────┴──────────────┴──────────────┘ │
+│  ┌──────────────────────────────────────────────┐   │
+│  │ EfCoreAuthRepository (IAuthRepository)       │   │
+│  └──────────────────────────────────────────────┘   │
 └────────────────────────┬────────────────────────────┘
-                         │
-                         ▼
+                          │
+                          ▼
 ┌─────────────────────────────────────────────────────┐
 │                   Banco de Dados                      │
 └─────────────────────────────────────────────────────┘
@@ -407,21 +409,22 @@ builder.Services.AddAuthKit(options =>
 
 ---
 
-## 9. Dependências Externas
+## 10. Dependências Externas
 
 | Biblioteca | Uso |
 |------------|-----|
 | `Microsoft.AspNetCore.Authentication.JwtBearer` | JWT Bearer tokens |
 | `System.IdentityModel.Tokens.Jwt` | JWT handling |
-| `Minisign.Net` ou `Libsodium` | Argon2id hashing |
-| `System.Security.Cryptography` | Nativo .NET, para BCrypt fallback |
-| `Swashbuckle.AspNetCore` / `Scalar.AspNetCore` | OpenAPI / Scalar UI |
-| `Dapper` (opcional) | Implementação Dapper do repositório |
-| `Microsoft.EntityFrameworkCore` (opcional) | Implementação EF Core do repositório |
+| `Microsoft.AspNetCore.Cryptography.KeyDerivation` | PBKDF2 password hashing |
+| `BCrypt.Net-Next` | BCrypt password hashing (fallback) |
+| `Microsoft.EntityFrameworkCore` | EF Core ORM |
+| `Microsoft.EntityFrameworkCore.SqlServer` | SQL Server provider |
+| `Scalar.AspNetCore` | OpenAPI/Scalar UI |
+| `OpenTelemetry.*` | Telemetry/Metrics (middleware) |
 
 ---
 
-## 10. Planos Futuros
+## 11. Planos Futuros
 
 - [ ] Suporte a **Redis** para rate limiting e sessions distribuídas
 - [ ] **Event Sourcing** para auditoria de auth events
@@ -429,8 +432,11 @@ builder.Services.AddAuthKit(options =>
 - [ ] **GraphQL endpoint** para queries de auth
 - [ ] **Internationalization** (i18n) para mensagens de erro
 - [ ] **Health Checks** para monitoring
-- [ ] **Telemetry / Metrics** (OpenTelemetry)
+- [ ] Dapper repository (fallback mais leve)
+- [ ] InMemory repository (para testes)
+- [ ] OAuth providers (Google, GitHub, Microsoft, Facebook)
+- [ ] Multi-tenant middleware
 
 ---
 
-*Documento de referência para desenvolvimento. Versão 1.0 — Out 2025*
+*Documento de referência para desenvolvimento. Versão 2.0 — Out 2025*

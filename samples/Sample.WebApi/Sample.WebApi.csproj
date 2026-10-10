@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AuthKit.Configuration\AuthKit.Configuration.csproj" />
-    <ProjectReference Include="..\..\src\AuthKit.Middleware\AuthKit.Middleware.csproj" />
+    <ProjectReference Include="..\..\src\AuthKit.AuthKit\AuthKit.AuthKit.csproj" />
   </ItemGroup>
 
 </Project>
