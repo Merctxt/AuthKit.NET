@@ -392,3 +392,4 @@ public class EfCoreAuthRepository : IAuthRepository
         return Convert.ToBase64String(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(jti.ToString())));
     }
 }
+

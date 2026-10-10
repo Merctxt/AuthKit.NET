@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AuthKit.Core\AuthKit.Core.csproj" />
-    <ProjectReference Include="..\..\AuthKit.Interfaces\AuthKit.Interfaces.csproj" />
+    <ProjectReference Include="../AuthKit.Core/AuthKit.Core.csproj" />
+    <ProjectReference Include="../AuthKit.Interfaces/AuthKit.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,3 +17,4 @@
   </PropertyGroup>
 
 </Project>
+
