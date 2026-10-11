@@ -1,6 +1,4 @@
-using AuthKit.Core.Services.DTOs;
-
-namespace AuthKit.Core.Services;
+namespace AuthKit.Core.Services.DTOs;
 
 public record EnableTwoFactorRequest(string Password);
 

@@ -5,7 +5,6 @@ using AuthKit.Core.Services.DTOs;
 public interface ISessionService
 {
     Task<SessionDto> CreateAsync(CreateSessionRequest request, CancellationToken ct = default);
-    Task<IResult> RevokeByIdAsync(Guid sessionId, CancellationToken ct = default);
     Task<IResult> RevokeAsync(Guid sessionId, CancellationToken ct = default);
     Task<IResult> RevokeByUserAsync(Guid userId, CancellationToken ct = default);
     Task<IEnumerable<SessionDto>> ListByUserAsync(Guid userId, CancellationToken ct = default);

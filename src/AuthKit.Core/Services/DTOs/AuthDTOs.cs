@@ -10,6 +10,12 @@ public record RefreshTokenRequest(string Token);
 
 public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 
+public record ForgotPasswordRequest(string Email);
+
+public record ResetPasswordRequest(string Email, string Token, string NewPassword);
+
+public record EmailVerificationRequest(string Email, string Code);
+
 public record UserDto(Guid Id, string Email, string? Username, bool EmailConfirmed, bool IsLockedOut, DateTime? LockedOutUntil, DateTime CreatedAt, DateTime? LastLoginAt);
 
 public record AuthResult(bool Success, string Message, UserDto? User = null, TokenResponse? Token = null);
