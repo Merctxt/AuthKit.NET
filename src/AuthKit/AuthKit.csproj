@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>AuthKit</RootNamespace>
+    <AssemblyName>AuthKit</AssemblyName>
+    <LangVersion>13</LangVersion>
+    <IsPackable>true</IsPackable>
+    <PackageId>AuthKit</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Giovanni Hettwer Vanini</Authors>
+    <Description>AuthKit.NET - Autenticação e autorização integrada ao .NET.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AuthKit.Core\AuthKit.Core.csproj" />
+    <ProjectReference Include="..\AuthKit.Data\AuthKit.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
