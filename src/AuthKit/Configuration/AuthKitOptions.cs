@@ -7,6 +7,7 @@ public class AuthKitOptions
     public PasswordHashOptions PasswordHash { get; set; } = new();
     public TwoFactorOptions TwoFactor { get; set; } = new();
     public RateLimitOptions RateLimit { get; set; } = new();
+    public EmailOptions Email { get; set; } = new();
     public SessionOptions Session { get; set; } = new();
     public string EndpointsPrefix { get; set; } = "/auth";
 }
@@ -50,4 +51,10 @@ public class RateLimitOptions
 public class SessionOptions
 {
     public int MaxActivePerUser { get; set; } = 5;
+}
+
+public class EmailOptions
+{
+    public int MaxChanges { get; set; } = 3;
+    public TimeSpan Window { get; set; } = TimeSpan.FromDays(30);
 }
