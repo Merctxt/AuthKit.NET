@@ -9,7 +9,7 @@ public class AuthKitOptions
     public RateLimitOptions RateLimit { get; set; } = new();
     public EmailOptions Email { get; set; } = new();
     public SessionOptions Session { get; set; } = new();
-    public string EndpointsPrefix { get; set; } = "/auth";
+    public string EndpointsPrefix { get; set; } = "/v1";
 }
 
 public class JwtOptions
