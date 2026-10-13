@@ -1,5 +1,6 @@
 using AuthKit.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AuthKit.Data;
 
@@ -28,7 +29,11 @@ public class AuthDbContext : DbContext
             builder.Property(r => r.Permissions)
                 .HasConversion(
                     v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions()),
-                    v => System.Text.Json.JsonSerializer.Deserialize<List<string>>(v, new System.Text.Json.JsonSerializerOptions()) ?? new List<string>());
+                    v => System.Text.Json.JsonSerializer.Deserialize<List<string>>(v, new System.Text.Json.JsonSerializerOptions()) ?? new List<string>())
+                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
+                    (left, right) => left == null ? right == null : right != null && left.SequenceEqual(right),
+                    value => value.Aggregate(0, (hash, permission) => HashCode.Combine(hash, permission.GetHashCode())),
+                    value => value.ToList()));
         });
 
         modelBuilder.Entity<Session>(builder =>
