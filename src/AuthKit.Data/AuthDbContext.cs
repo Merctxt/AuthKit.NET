@@ -7,7 +7,6 @@ public class AuthDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<RefreshTokenRegistry> RefreshTokenRegistries { get; set; }
     public DbSet<UserTwoFactorSecret> UserTwoFactorSecrets { get; set; }
@@ -30,19 +29,6 @@ public class AuthDbContext : DbContext
                 .HasConversion(
                     v => System.Text.Json.JsonSerializer.Serialize(v, new System.Text.Json.JsonSerializerOptions()),
                     v => System.Text.Json.JsonSerializer.Deserialize<List<string>>(v, new System.Text.Json.JsonSerializerOptions()) ?? new List<string>());
-        });
-
-        modelBuilder.Entity<UserRole>(builder =>
-        {
-            builder.HasKey(ur => new { ur.UserId, ur.RoleId });
-
-            builder.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(ur => ur.UserId);
-
-            builder.HasOne<Role>()
-                .WithMany()
-                .HasForeignKey(ur => ur.RoleId);
         });
 
         modelBuilder.Entity<Session>(builder =>
