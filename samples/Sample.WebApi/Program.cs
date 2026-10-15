@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthKit(options =>
 {
     options.Jwt.SecretKey = builder.Configuration["AuthKit:Jwt:SecretKey"];
+    options.EndpointsPrefix = "/api";
 });
 
 builder.Services.AddOpenApi();
