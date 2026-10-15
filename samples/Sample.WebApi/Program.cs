@@ -6,7 +6,10 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthKit();
+builder.Services.AddAuthKit(options =>
+{
+    options.Jwt.SecretKey = builder.Configuration["AuthKit:Jwt:SecretKey"];
+});
 
 builder.Services.AddOpenApi();
 
