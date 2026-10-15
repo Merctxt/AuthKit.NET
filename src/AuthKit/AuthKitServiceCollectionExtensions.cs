@@ -12,17 +12,8 @@ public static class AuthKitServiceCollectionExtensions
 {
     public static IServiceCollection AddAuthKit(this IServiceCollection services, Action<AuthKitOptions>? configure = null)
     {
-        var options = new AuthKitOptions();
-        configure?.Invoke(options);
-        ValidateOptions(options);
-
         services.Configure(configure ?? (_ => { }));
         services.AddSingleton(sp => sp.GetRequiredService<IOptions<AuthKitOptions>>().Value);
-
-        if (options.OpenTelemetry?.Enabled == true)
-        {
-            RegisterOpenTelemetry(services, options.OpenTelemetry);
-        }
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
@@ -36,18 +27,5 @@ public static class AuthKitServiceCollectionExtensions
         services.AddScoped<ILoginAttemptService, LoginAttemptService>();
 
         return services;
-    }
-
-    private static void ValidateOptions(AuthKitOptions options)
-    {
-        if (!options.Jwt.ValidateSecretKey())
-        {
-            throw new InvalidOperationException(JwtOptions.SecretKeyRequiredMessage);
-        }
-    }
-
-    private static void RegisterOpenTelemetry(IServiceCollection services, OpenTelemetryOptions otelOptions)
-    {
-        
     }
 }
