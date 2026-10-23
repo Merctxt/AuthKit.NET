@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="FluentAssertions" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\AuthKit\AuthKit.csproj" />
   </ItemGroup>
 
@@ -22,6 +27,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="FluentAssertions" Version="8.11.0" />
   </ItemGroup>
 
 </Project>

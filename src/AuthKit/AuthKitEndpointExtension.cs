@@ -13,6 +13,7 @@ public static class AuthKitEndpointExtension
 {
     public static WebApplication UseAuthKit(this WebApplication app)
     {
+        app.ValidateConfiguration();
         app.UseMiddleware<GlobalExceptionMiddleware>();
 
         var options = app.Services.GetRequiredService<IOptions<AuthKitOptions>>().Value;
