@@ -1,31 +1,11 @@
-namespace AuthKit.Configuration;
+namespace AuthKit.Core.Configuration;
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 public static class ConfigurationValidation
 {
     private static readonly Type _loggerType = typeof(ConfigurationValidation);
-
-    public static IApplicationBuilder ValidateConfiguration(this IApplicationBuilder app)
-    {
-        var options = app.ApplicationServices.GetRequiredService<IOptions<AuthKitOptions>>().Value;
-        var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
-        var logger = loggerFactory.CreateLogger(_loggerType);
-
-        var errors = ValidateAll(options, logger);
-
-        if (errors.Count > 0)
-        {
-            var message = string.Join("; ", errors);
-            logger.LogError("AuthKit configuration validation failed: {Errors}", message);
-            throw new InvalidOperationException(message);
-        }
-
-        return app;
-    }
 
     public static List<string> ValidateAll(AuthKitOptions options, ILogger logger)
     {
@@ -44,6 +24,11 @@ public static class ConfigurationValidation
         ValidatePagination(options.Pagination, errors, logger);
 
         return errors;
+    }
+
+    public static List<string> ValidateAllWithoutThrow(AuthKitOptions options, ILogger logger)
+    {
+        return ValidateAll(options, logger);
     }
 
     private static void ValidateJwt(JwtOptions jwt, ILogger logger)

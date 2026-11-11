@@ -1,4 +1,4 @@
-namespace AuthKit.Configuration;
+namespace AuthKit.Core.Configuration;
 
 public class AuthKitOptions
 {
