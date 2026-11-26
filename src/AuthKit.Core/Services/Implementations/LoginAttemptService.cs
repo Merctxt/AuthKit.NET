@@ -1,11 +1,22 @@
 namespace AuthKit.Core.Services.Implementations;
 
-using AuthKit.Core.Models;
+using AuthKit.Core.Configuration;
 using AuthKit.Core.Services;
 using AuthKit.Core.Services.DTOs;
+using AuthKit.Core;
+using AuthKit.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class LoginAttemptService : ILoginAttemptService
 {
+    private readonly AuthDbContext _db;
+    private readonly AccountLockoutOptions _lockoutOptions;
+
+    public LoginAttemptService(AuthDbContext db, AccountLockoutOptions lockoutOptions)
+    {
+        _db = db;
+        _lockoutOptions = lockoutOptions;
+    }
     public Task<Guid> RecordAsync(LoginAttemptRequest request, CancellationToken ct = default)
     {
         return Task.FromResult(Guid.NewGuid());

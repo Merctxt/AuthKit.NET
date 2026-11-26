@@ -1,10 +1,26 @@
 namespace AuthKit.Core.Services.Implementations;
 
+using AuthKit.Core.Configuration;
 using AuthKit.Core.Services;
 using AuthKit.Core.Services.DTOs;
+using AuthKit.Core;
+using AuthKit.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 public class RefreshTokenService : IRefreshTokenService
 {
+    private readonly AuthDbContext _db;
+    private readonly RefreshTokenOptions _options;
+    private readonly IJwtService _jwt;
+
+    public RefreshTokenService(AuthDbContext db, RefreshTokenOptions options, IJwtService jwt)
+    {
+        _db = db;
+        _options = options;
+        _jwt = jwt;
+    }
     public Task<string> CreateAsync(Guid sessionId, CancellationToken ct = default)
     {
         return Task.FromResult(string.Empty);

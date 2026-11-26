@@ -1,10 +1,22 @@
 namespace AuthKit.Core.Services.Implementations;
 
+using AuthKit.Core.Configuration;
 using AuthKit.Core.Services;
 using AuthKit.Core.Services.DTOs;
+using AuthKit.Core;
+using AuthKit.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class SessionService : ISessionService
 {
+    private readonly AuthDbContext _db;
+    private readonly SessionOptions _options;
+
+    public SessionService(AuthDbContext db, SessionOptions options)
+    {
+        _db = db;
+        _options = options;
+    }
     public Task<SessionDto> CreateAsync(CreateSessionRequest request, CancellationToken ct = default)
     {
         return Task.FromResult(new SessionDto(Guid.NewGuid(), request.UserId, request.DeviceInfo, request.ExpiresAt, DateTime.UtcNow, false));

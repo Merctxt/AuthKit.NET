@@ -1,11 +1,19 @@
 namespace AuthKit.Core.Services.Implementations;
 
-using AuthKit.Core.Models;
 using AuthKit.Core.Services;
 using AuthKit.Core.Services.DTOs;
+using AuthKit.Core;
+using AuthKit.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class RoleService : IRoleService
 {
+    private readonly AuthDbContext _db;
+
+    public RoleService(AuthDbContext db)
+    {
+        _db = db;
+    }
     public Task<RoleDto> CreateAsync(RoleRequest request, CancellationToken ct = default)
     {
         return Task.FromResult(new RoleDto(Guid.NewGuid(), request.Name, request.Description, request.Permissions ?? new List<string>()));

@@ -1,6 +1,6 @@
 namespace AuthKit.Core.Services;
 
-using AuthKit.Core.Models;
+using AuthKit.Data.Models;
 using AuthKit.Core.Services.DTOs;
 
 public interface IUserManagerService

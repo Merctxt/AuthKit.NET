@@ -1,11 +1,22 @@
 namespace AuthKit.Core.Services.Implementations;
 
-using AuthKit.Core.Models;
+using AuthKit.Core.Configuration;
 using AuthKit.Core.Services;
 using AuthKit.Core.Services.DTOs;
+using AuthKit.Core;
+using AuthKit.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class UserManagerService : IUserManagerService
 {
+    private readonly AuthDbContext _db;
+    private readonly AuthKitOptions _options;
+
+    public UserManagerService(AuthDbContext db, AuthKitOptions options)
+    {
+        _db = db;
+        _options = options;
+    }
     public Task<UserDto?> GetByIdAsync(Guid userId, CancellationToken ct = default)
     {
         return Task.FromResult<UserDto?>(null);
