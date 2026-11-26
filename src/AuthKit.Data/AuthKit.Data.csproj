@@ -9,13 +9,5 @@
     <LangVersion>13</LangVersion>
   </PropertyGroup>
 
-  <!-- Domain puro: sem referências a projetos -->
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.17" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-  </ItemGroup>
 
 </Project>
