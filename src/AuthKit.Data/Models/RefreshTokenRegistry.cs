@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AuthKit.Core.Models;
+namespace AuthKit.Data.Models;
 
 public class RefreshTokenRegistry
 {

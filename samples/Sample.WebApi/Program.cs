@@ -1,5 +1,5 @@
 using AuthKit;
-using AuthKit.Data;
+using AuthKit.Core;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;

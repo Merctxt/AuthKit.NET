@@ -1,8 +1,8 @@
-using AuthKit.Core.Models;
+using AuthKit.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace AuthKit.Data;
+namespace AuthKit.Core;
 
 public class AuthDbContext : DbContext
 {
